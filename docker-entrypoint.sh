@@ -13,8 +13,8 @@ EOL
 /usr/local/bin/certbot certonly --dns-ovh --dns-ovh-credentials ./ovh.ini --non-interactive --agree-tos --email ${EMAIL} -d ${DOMAIN}
 
 # Update ESXi SSL Cert with the newly generated one
-curl -X PUT --data-binary "@/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" https://${DOMAIN}/host/ssl_cert -u ${VMWARE_USERNAME}:${VMWARE_PASSWORD}
-curl -X PUT --data-binary "@/etc/letsencrypt/live/${DOMAIN}/privkey.pem" https://${DOMAIN}/host/ssl_key -u ${VMWARE_USERNAME}:${VMWARE_PASSWORD}
+curl -k -X PUT --data-binary "@/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" https://${DOMAIN}/host/ssl_cert -u ${VMWARE_USERNAME}:${VMWARE_PASSWORD}
+curl -k -X PUT --data-binary "@/etc/letsencrypt/live/${DOMAIN}/privkey.pem" https://${DOMAIN}/host/ssl_key -u ${VMWARE_USERNAME}:${VMWARE_PASSWORD}
 
 # Restart hostd service on the ESXi host to apply the new certificate
 export SSHPASS=${VMWARE_PASSWORD}
