@@ -23,6 +23,30 @@ restarting the hostd service.
 
     docker run -e DOMAIN=$DOMAIN -e EMAIL=$EMAIL -e VMWARE_USERNAME=$VMWARE_USERNAME -e VMWARE_PASSWORD=$VMWARE_PASSWORD -e OVH_APPLICATION_KEY=$OVH_APPLICATION_KEY -e OVH_CONSUMER_KEY=$OVH_CONSUMER_KEY -e OVH_APPLICATION_SECRET=$OVH_APPLICATION_SECRET alistarle/esx-ovh-lets-encrypt
 
+## Run the container as a kubernetes cronjob
+
+1. Define some secrets in your kubernetes cluster:
+
+        kubectl create secret generic vmware-credentials --from-literal=username=<esxi-username> --from-literal=password=<esxi-password>
+        kubectl create secret generic ovh-credentials --from-literal=application_key=<ovh_application_key> --from-literal=consumer_key=<ovh_consumer_key> --from-literal=application_secret=<ovh_application_secret>
+
+2. Replace in the file cronjob.yml your esxi domain and email:
+
+        ...
+        - name: DOMAIN
+            value: "your_esxi_fqdn"
+        - name: EMAIL
+            value: "your_domain_email_address"
+        ...
+
+3. Schedule your kubernetes cronjob, he will run the first day of each month at 00:00:
+
+        kubectl apply -f cronjob.yml
+
+4. (Optionnal) Run manually the cronjob, create a job from it:
+
+        kubectl create job --from=cronjob/esx-ovh-lets-encrypt esx-ovh-lets-encrypt-manual-run 
+
 ## References:
 
 Let's encrypt DNS OVH blogpost: https://buzut.net/certbot-challenge-dns-ovh-wildcard/

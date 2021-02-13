@@ -1,0 +1,45 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: esx-ovh-lets-encrypt
+spec:
+  schedule: "0 0 1 * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: esx-ovh-lets-encrypt
+            image: alistarle/esx-ovh-lets-encrypt
+            imagePullPolicy: Always
+            env:
+            - name: DOMAIN
+              value: "esx.infra.alykraft.fr"
+            - name: EMAIL
+              value: "alykraft@gmail.com"
+            - name: VMWARE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: vmware-credentials
+                  key: username
+            - name: VMWARE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: vmware-credentials
+                  key: password
+            - name: OVH_APPLICATION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ovh-credentials
+                  key: application_key
+            - name: OVH_CONSUMER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ovh-credentials
+                  key: consumer_key
+            - name: OVH_APPLICATION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ovh-credentials
+                  key: application_secret
+          restartPolicy: OnFailure
