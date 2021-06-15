@@ -9,6 +9,8 @@ dns_ovh_application_secret = $OVH_APPLICATION_SECRET
 dns_ovh_consumer_key = $OVH_CONSUMER_KEY
 EOL
 
+chmod 600 ./ovh.ini
+
 # Request let's encrypt certificate with DNS challange
 /usr/local/bin/certbot certonly --dns-ovh --dns-ovh-credentials ./ovh.ini --non-interactive --agree-tos --email ${EMAIL} -d ${DOMAIN}
 
